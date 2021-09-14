@@ -1,0 +1,13 @@
+
+include: package:lint/analysis_options.yaml
+
+analyzer:  
+  errors: 
+    todo: info
+
+linter:
+  rules:
+    always_specify_types: true
+    avoid_classes_with_only_static_members: false
+    require_trailing_commas: false
+    sort_constructors_first: true
