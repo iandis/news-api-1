@@ -1,7 +1,33 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:news_app/core/constants/app_apis.dart';
+import 'package:news_app/core/repositories/base_news_repo.dart';
+import 'package:news_app/core/repositories/news_repo.dart';
+import 'package:news_app/views/home/home_screen.dart';
+import 'package:postor/error_handler.dart';
+import 'package:postor/postor.dart';
 
 void main() {
-  runApp(const MyApp());
+  HttpOverrides.runWithHttpOverrides(
+    () {
+      GetIt.I.registerSingleton<Postor>(Postor(
+        AppApis.baseUrl,
+      ));
+      GetIt.I.registerSingleton<BaseNewsRepository>(NewsRepository());
+      initErrorMessages(defaultErrorMessageHandler);
+      runApp(const MyApp());
+    },
+    MyHttpOverrides(),
+  );
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -14,54 +40,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+      home: const HomeScreen(),
     );
   }
 }

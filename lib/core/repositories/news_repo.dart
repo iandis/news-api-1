@@ -16,8 +16,14 @@ class NewsRepository implements BaseNewsRepository {
 
   @protected
   Future<List<Article>> getArticles({int page = 1, int? howMany}) async {
-    final String headlineEndpoint = AppApis.getHeadlineEndpoint();
-    final _JsonMap rawResponse = await _postor.get(headlineEndpoint).get<_JsonMap>();
+    final _JsonMap rawResponse = await _postor.get(
+      AppApis.headlineEndpoint,
+      parameters: <String, String>{
+        'country': 'id',
+        'page': page.toString(),
+        'apiKey': AppApis.apiKey,
+      },
+    ).get<_JsonMap>();
     final List<dynamic> rawArticles = rawResponse['articles'] as List<dynamic>;
 
     if (howMany != null) {
@@ -48,7 +54,7 @@ class NewsRepository implements BaseNewsRepository {
   Future<List<Article>> search({required String keyword, int page = 1}) async {
     final String searchEndpoint = AppApis.getSearchEndpoint(keyword: keyword, page: page);
     final String requestUrl = Uri.parse(AppApis.baseUrl + searchEndpoint).toString();
-    
+
     lastSearchUrl = requestUrl;
 
     final _JsonMap rawResponse = await _postor
@@ -73,7 +79,7 @@ class NewsRepository implements BaseNewsRepository {
 
   @override
   void cancelLastSearch() {
-    if(lastSearchUrl != null) {
+    if (lastSearchUrl != null) {
       _postor.cancel(lastSearchUrl!);
     }
   }

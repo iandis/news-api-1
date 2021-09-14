@@ -17,12 +17,12 @@ class Article {
     final ArticleSource source = ArticleSource.fromMap(rawSource as Map<String, dynamic>);
     return Article(
       source: source,
-      author: map['author'] as String,
+      author: map['author'] as String? ?? '',
       title: map['title'] as String,
-      description: map['description'] as String,
+      description: map['description'] as String? ?? '',
       url: map['url'] as String,
-      imageUrl: map['urlToImage'] as String,
-      content: map['content'] as String,
+      imageUrl: map['urlToImage'] as String? ?? '',
+      content: map['content'] as String? ?? '',
       publishedAt: DateTime.parse(map['publishedAt'] as String),
     );
   }

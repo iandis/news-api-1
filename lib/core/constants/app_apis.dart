@@ -3,6 +3,9 @@ class AppApis {
   static const String apiKey = '5f00d331dfd24c32a3e34d70cae204b6';
   static const String baseUrl = 'https://newsapi.org';
 
+  static const String headlineEndpoint = '/v2/top-headlines';
+  static const String searchEndpoint = '/v2/everything';
+
   static String getHeadlineEndpoint({int page = 1}) {
     return '/v2/top-headlines?country=id&page=$page&apiKey=$apiKey';
   }
